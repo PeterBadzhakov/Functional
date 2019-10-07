@@ -26,10 +26,10 @@
 ; Recursion needs: bottom, self-reference, step.
 ; Fibbonacci: Fib(n) = Fib(n - 1) + Fib(n - 2), n > 2. Else 1.
 ; First try:
-(define (fib n)
+(define (fib_exp n)
     (if (< n 2)
         1
-        (+ (fib (- n 1)) (fib (- n 2)))
+        (+ (fib_exp (- n 1)) (fib_exp (- n 2)))
     )
 )
 ; Slow, cannot memoize from one branch to another.
@@ -38,16 +38,15 @@
 ; We slide the window to keep our current elements.
 ; Fib(n) = 1, n < 2
 ;          F`(n, 2, 1, 1), F1 = F`(x-1), F2 = F`(x-2), F` = F1 + F2, x = n
-(define (fib1 n x f1 f2)
-    (if (= n x)
-        (+ f1 f2)
-        (fib1 n (+ x 1) (+ f1 f2) f1) ; x е номер на текуща итерация.
+(define (fib_lin_rec goal curr last prelast)
+    (if (= goal curr)
+        (+ last prelast)
+        (fib_lin_rec goal (+ curr 1) (+ last prelast) last) 
     )
 )
-(define (fib n)
+(define (fib_lin n)
     (if (< n 2)
         1
-        (fib1 n 2 11)
+        (fib_lin_rec n 2 1 1)
     )
 )
-
