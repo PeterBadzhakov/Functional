@@ -39,6 +39,7 @@
 ; Fib(n) = 1, n < 2
 ;          F`(n, 2, 1, 1), F1 = F`(x-1), F2 = F`(x-2), F` = F1 + F2, x = n
 (define (fib_lin_rec goal curr last prelast)
+    ;TODO: add (let*) instead of wrap
     (if (= goal curr)
         (+ last prelast)
         (fib_lin_rec goal (+ curr 1) (+ last prelast) last) 
