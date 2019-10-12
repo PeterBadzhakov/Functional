@@ -4,7 +4,6 @@
 ; Чисти функции:
 ;   x1 = x2 => f(x1) = f(x2)
 ; => easier parallelisation, memoisation, no race conditions.
-; ===========ASK: f(12/3), f(4/1)
 ; окръжение = памет, state machine memory
 ; Without side effects, you can't know the program works,
 ; nothing to perceive.
