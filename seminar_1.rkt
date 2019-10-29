@@ -14,7 +14,7 @@
 ; Основна схема за оценяване
 ; (f x y z) -> x, y, z -> f(x, y, z)
 ; (if (< x 0) (- x) x)
-; - -> operator; (-) -> apply - to empty set
+; - -> operator-; (-) -> apply - to empty set
 ; (define <what> <how>)
 (define (fact n)
         (if (== n 0) 
