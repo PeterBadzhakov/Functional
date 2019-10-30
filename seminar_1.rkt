@@ -17,7 +17,7 @@
 ; - -> operator-; (-) -> apply - to empty set
 ; (define <what> <how>)
 (define (fact n)
-        (if (== n 0) 
+        (if (= n 0) 
             1 
             (* n (fact (- n 1)))
         )        
