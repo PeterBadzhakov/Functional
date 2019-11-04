@@ -7,18 +7,10 @@
             (fib_iter (+ cur 1) (+ fib1 fib2) fib1)
         )
     )
+
     (fib_iter 1 1 1)
 )
 ; let по-добре за стойности, а define за функции.
-
-(define (prime? n)
-    (cond 
-        ((< n 2) #f)
-        ((= 2 2) #t)
-        ((hasDiv? n) #f)
-        (else #t)
-    )
-)
 
 (define (hasDiv? n)
     (define (hasDivH x)
@@ -32,12 +24,21 @@
     )
     (if (even? n)
         #t
-        (hasDivH? 3)
+        (hasDivH? (+ n 1))
+    )
+)
+(define (prime? n)
+    (cond 
+        ((< n 2)        #f)
+        ((= 2 2)        #t)
+        ((hasDiv? n)    #f)
+        (else           #t)
     )
 )
 
-; o o o o o -> [] -> *` *' *" *^ -> [] -> *` *` *` -> [] -> @
-;              ^~~map               ^~~filter         ^~~sum
+
+; o o o o o o o o o -> [] -> *` *' *" *^ -> [] -> *` *` *` -> [] -> @
+;                      ^~~map               ^~~filter         ^~~sum
 ; достатъчно за всичко.
 
 ;            0   +     stream +1   <n

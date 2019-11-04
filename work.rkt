@@ -1,124 +1,95 @@
-; While the condition is true over the current element,
-; accumulate the current element into the current value via
-; the operation, repeat over the next element.
-(define (accumulate val oper cur next con)
-    (if (con cur)
-        (accumulate (oper val cur) oper (next cur) next cond)
-        val
-    )   
-)
+;TODO: Rename functions to use unit tests script!
 
 (define (1+ n)
     (+ 1 n)
 )
-
-; TODO: via accumulate, val is (curr . last)
-(define (fib n)
-    (define (fib-iter iter goal curr last)
-        (if (>= iter goal)
-            curr
-            (fib-iter (1+ iter) goal (+ curr last) curr)
-        )
-    )
-
-    (fib-iter 0 n 0 1)
-)
-
-(define (isDiv? what of)
-    (if (= (remainder of what) 0)
-        #t
-        #f
+(define (my_for from to op state)
+    (if (> from to)
+        state
+        (my_for (1+ from) to op (op from state))
     )
 )
 
-(define (prime? n)
-    
+; Да се дефинира функцията fact-iter(n), която пресмята n! чрез итерация.
+
+(define (fact-iter n)
+    (my_for 1 n * 1)
 )
 
-; Да се дефинира функция add(x, y), която сумира x и y.
-(define (add x y)
-    (+ x y)
+; Да се дефинира функцията sum-iter(start, end), която пресмята 
+; сумата на числата в интервала [start, end] чрез итерация.
+
+(define (sum-iter start end)
+    (my_for start end + 0)
 )
 
-; Да се дефинира предикат even(n), проверяващ дали n е четно число и предикат odd(n), 
-; проверяващ дали n е нечетно число.
-(define (even n)
-    (= 0 (remainder n 2))
-)
-(define (odd n)
-    (not (even n))
-)
+; Да се дефинира функцията expt-iter(x, n), която пресмята xn чрез итерация.
 
-; Да се дефинира функцията signum(x), която връща -1, 0 или 1 в зависимост от това, 
-; дали x е отрицателно, нула или положително число.
-(define (signum x)
-    (cond
-        ((> x 0) 1)
-        ((= x 0) 0)
-        ((< x 0) -1)
+(define (expt-iter x n)
+    (case (signum n)
+        ((1) (my_for 1 n (lambda (i j) (* x x)) 1))
+        ((0) 1)
+        ((-1) (/ 1 (expt-iter x (- n))))
     )
 )
 
-; Да се дефинира функцията factorial(n), пресмятаща n!.
-(define (fact n)
-    (if (<= n 1)
+; Да се дефинира функцията count-digits(n), която намира броят на цифрите в 
+; числото n. Реализирайте я с линейна рекурсия. Реализирайте я с линейна итерация.
+(define (count-digits-rec n)
+    (if (= n 0)
         1
-        ; n * fact(n - 1)
-        (* n (fact (- n 1)))
+        (+ 1 (count-digits-rec (/ n 10)))
     )
 )
-
-; Да се дефинира функция sum(start, end), която намира сумата на числата в 
-; интервала [start, end].
-(define (sum_lin start end)
-    (if (= start end)
-        end
-        ; start + sum_lin(start + 1, end)
-        (+ start (sum_lin (+ start 1) end))
-    )
-)
-(define (gauss_sum start end)
-    ; Assumes start >= 0, start <= end
-    ; (start + end) * (end - start + 1) / 2
-    (if (> start end) 
-        0
-        (/ (* (+ start end) (+ end (- start) 1)) 2) 
-    )
-)
-(define (sum_const start end)
-    (cond
-        ; 0 ... start ... end
-        ((>= 0 (signum start)) (gauss_sum start end))
-        ; start ... 0 ... end
-        (+ (gauss_sum 0 end) (- (gauss_sum start 0)))
-    )
-)
-
-; Да се дефинира функция expont(x, n), която пресмята xn.
-(define (expont x n)
-    (case (signum n)
-        ; a ^ -b == (a ^ -1) ^ b
-        ((-1) (expont (/ 1 x) (- n)))
-        ((0) 1)
-        ((1) (* x (expont x (- n 1))))
-    )
-)
-
-; Да се дефинира функция fast-expont(x, n), която пресмята xn, използвайки 
-; следното свойство:
-; Ако n е четно, то xn = (x(n/2))*(x(n/2)),
-; иначе xn = x * x(n-1).
-(define (fast-expont x n)
-    (case (signum n)
-        ; a ^ -b == (a ^ -1) ^ b
-        ((-1) (fast-expont (/ 1 x) (- n)))
-        ((0) 1)
-        ((1) (if (even n)
-                (* (fast-expont x (/ n 2)) (fast-expont x (/ n 2)))
-                (* x (fast-expont x (- n 1)))
-             )
+(define (count-digits-iter n)
+    (define (helper n curr)
+        (if (= n 0)
+            curr
+            (helper (/ n 10) (1+ curr))
         )
     )
+
+    (helper n 1)
 )
+
+; Да се дефинира функцията sum-digits(n), която намира сумата на цифрите в 
+; числото n. Реализирайте я с линейна рекурсия. Реализирайте я с линейна итерация.
+(define (sum-digits-rec n)
+    (if (= 0 n)
+        0
+        (+ (remainder n 10) (sum-digits-rec (/ n 10)))
+    )
+)
+(define (sum-digits-iter n)
+    (define (help n sum)
+        (if (= n 0)
+            sum
+            (help (/ n 10) (+ (remainder n 10) sum))
+        )
+    )
+
+    (sum-digits-iter n)
+)
+
+; Да се дефинира функцията reverse-digits(n), която връща число с цифрите 
+; на числото n в обратен ред. Реализирайте я с линейна рекурсия. Реализирайте я 
+; с линейна итерация.
+
+
+; Да се дефинира функцията count-divisors(n), която брои колко делителя има 
+; числото n. Реализирайте я с линейна рекурсия. Реализирайте я с линейна итерация.
+
+
+; Да се дефинира функцията sum-divisors(n), която пресмята сумата на 
+; делителите на числото n. Реализирайте я с линейна рекурсия. Реализирайте 
+; я с линейна итерация.
+
+
+; Да се дефинира предикат prime?(n), който проверява дали числото n е просто.
+
+
+; Да се дефинира функцията fast-expt-iter(x, n), която пресмята xn чрез 
+; бързо степенуване, но използвайки линейна итерация.
+; Припомнете си свойството: Aко n е четно, то xn = (x(n/2))2.
 
 
