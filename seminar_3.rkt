@@ -83,6 +83,7 @@
         )
     )
 
-    ?? ?? ??
+    (and (list? l) (list? (car l)) (m? l (length (car l))))
+    ; All rows are lists of atoms as long as the first row.
 )
 
