@@ -50,14 +50,14 @@
 (define (count-digits n)
     (define (helper n curr)
         (if (< n 10)
-            curr
-            (helper (quotient n 10) (1+ curr))
+            (+ 1 curr)
+            (helper (quotient n 10) (+ 1 curr))
         )
     )
 
     (if (< n 0)
-        (helper (- n) 1)
-        (helper n 1)
+        (helper (- n) 0)
+        (helper n 0)
     )
 )
 
@@ -72,8 +72,8 @@
 ;)
 (define (sum-digits n)
     (define (help n sum)
-        (if (= n 0)
-            sum
+        (if (< n 10)
+            (+ sum n)
             (help (quotient n 10) (+ (remainder n 10) sum))
         )
     )
