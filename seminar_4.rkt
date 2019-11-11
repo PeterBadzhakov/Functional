@@ -70,3 +70,63 @@
     )
 )
 
+; DFS returns preorder list.
+(define (dfs tree)
+    (if (null? tree) 
+        tree
+        (append 
+            (dfs (get_bst tree))
+            (list (get_root tree))
+            (dfs (get_right tree))
+        )
+    )
+)
+
+; Graph - (V, E), child list
+; ((1 2 3 4 5 6) . ((1 2) (1 3) (2 6) (3 6) (2 4)))
+(define (get_nodes graph)
+    (map car graph)
+)
+(define (get_succ x graph)
+    (cdr (car (filter (lambda (n) (= x (car n))) graph))))
+;   ^~ Children of the first match of x's parent-children list.
+)
+
+(define (connected? x y graph)
+    (or (member? y (get_succ x graph)) (member? x (get_succ y graph)))
+)
+
+; Define a front of elements, choose element, increase front with its
+; children.
+; Earliest added -> stack, DFS
+; Last added -> queue, BFS
+
+(define (all_next path graph)
+    (map (lambda (x) (cons x path))
+        (get_succ (car path) graph)
+    )
+)
+
+(define (get_next front graph)
+    ; Combine the first element's successors to the list.
+    (filter_front (append (all_next (car front)) (cdr front)))
+)
+
+(define (trav front pred? graph)
+    (cond
+        ((null? front) `())
+        ((pred? (car front)) (car front))
+        (else (trav (get_next front graph) pred? graph))
+    )
+)
+
+; Returns list of paths.
+(define (path start end graph)
+    (trav 
+        (list (list start))
+        (lambda (path) (= (car path) end)) 
+        graph
+    )
+)
+
+
