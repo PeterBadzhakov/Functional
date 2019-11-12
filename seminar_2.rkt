@@ -102,7 +102,3 @@
 (derive f x)
 (integrate f a b)
 
-
-
-
-
