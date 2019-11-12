@@ -89,7 +89,7 @@
 )
 (define (get_succ x graph)
     (cdr (car (filter (lambda (n) (= x (car n))) graph))))
-;   ^~ Children of the first match of x's parent-children list.
+;   ^~ Children of the first x in the parent-children list.
 )
 
 (define (connected? x y graph)
