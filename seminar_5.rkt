@@ -96,7 +96,7 @@
     (or (member? y (get_succ x graph)) (member? x (get_succ y graph)))
 )
 
-; Define a front of elements, choose element, increase front with its
+; Define a front of elements, choose an element, increase front with its
 ; children.
 ; Earliest added -> stack, DFS
 ; Last added -> queue, BFS
@@ -108,7 +108,7 @@
 )
 
 (define (get_next front graph)
-    ; Combine the first element's successors to the list.
+    ; Combine the first element's successors with the list.
     (filter_front (append (all_next (car front)) (cdr front)))
 )
 
