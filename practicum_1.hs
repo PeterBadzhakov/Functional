@@ -67,7 +67,6 @@ data Nat
   | Succ Nat
   deriving Show
 
-
 predNat :: Nat -> Nat
 predNat Zero = Zero
 predNat (Succ n) = n
@@ -115,8 +114,8 @@ myIf False _ x = x
 -- EXERCISE: Plus
 -- As usual.
 plus :: Nat -> Nat -> Nat
-plus Zero     m = m
-plus (Succ n) m = Succ (plus n m)
+plus Zero     x = x
+plus (Succ x) y = Succ (plus x y)
 
 -- EXERCISE: Mult
 -- You know the drill
@@ -215,7 +214,9 @@ infixl 6 :.
 -- succBitVector (End :. BZero) -- End :. BOne
 -- succBitVector (End :. BOne :. BOne :. BOne) -- End :. BOne :. BZero :. BZero :. BZero
 succBitVector :: BitVector -> BitVector
-succBitVector = undefined
+succBitVector End = End :. BOne
+succBitVector (x :. BZero) = x :. BOne
+succBitVector (x :. BOne) = (succBitVector x) :. BZero
 
 -- EXERCISE: Detect if a bitvector is zero
 -- This is actually helpful for the next task
@@ -223,17 +224,34 @@ succBitVector = undefined
 -- isEnd End -- True
 -- isEnd (End :. BOne) -- False
 isEnd :: BitVector -> Bool
-isEnd = undefined
+isEnd End = True
+isEnd (bs :. BZero) = (isEnd bs)
+isEnd _ = False
+
+reverseBitsH :: BitVector -> BitVector -> BitVector
+reverseBitsH End curr = curr
+reverseBitsH (bs :. b) curr = reverseBitsH bs (curr :. b)
+
+reverseBits :: BitVector -> BitVector
+reverseBits bs = reverseBitsH bs End
 
 -- EXERCISE: Canonicalise
 -- A BitVector is said to be "canonical" if it has no leading zeroes.
--- Write a function to convert a BitVector to it's canonical form.
+-- Write a function to convert a BitVector to its canonical form.
 -- EXAMPLES:
 -- canonicalise End -- End
 -- canonicalise (End :. BOne) :. BZero -- End :. BOne :. BZero
 -- canonicalise (End :. BZero :. BZero :. BOne :. BZero) -- End :. BOne :. BZero
 canonicalise :: BitVector -> BitVector
-canonicalise = undefined
+canonicalise End = End
+canonicalise (bs :. BZero) = 
+  myIf (isEnd bs) 
+  (End) 
+  (canonicalise bs :. BZero)
+canonicalise (bs :. BOne) = 
+    myIf (isEnd bs) 
+        (End :. BOne) 
+        (canonicalise bs :. BOne)
 -- HINT:
 -- Think about the recursive case on BZero - you need to do something depending on its result.
 
@@ -244,16 +262,25 @@ canonicalise = undefined
 -- integerToBitVector 69 -- (End :. BOne :. BZero :. BZero :. BZero :. BOne :. BZero) :. BOne
 -- integerToBitVector 5 -- (End :. BOne :. BZero) :. BOne
 -- integerToBitVector 7 -- (End :. BOne :. BOne) :. BOne
+itobvH :: Integer -> BitVector -> BitVector
+itobvH 0 curr =  canonicalise (reverseBits curr)
+itobvH num curr = itobvH (quot num 2) (curr :. (myIf (even (mod num 10)) BZero BOne))
+
 integerToBitVector :: Integer -> BitVector
-integerToBitVector = undefined
+integerToBitVector num = itobvH num End
 
 -- EXERCISE: Convert a BitVector to a number
 -- EXAMPLES:
 -- integerToBitVector 0 -- End
 -- integerToBitVector 69 -- ((((((End :. BOne) :. BZero) :. BZero) :. BZero) :. BOne) :. BZero) :. BOne
 -- integerToBitVector 16 -- ((((End :. BOne) :. BZero) :. BZero) :. BZero) :. BZero
+bvtoiH :: BitVector -> Integer -> Integer -> Integer
+bvtoiH End _ curr = curr
+bvtoiH (bv :. BOne) exp curr = bvtoiH bv (exp * 2) (curr + exp)
+bvtoiH (bv :. BZero) exp curr = bvtoiH bv (exp * 2) curr
+
 bitVectorToInteger :: BitVector -> Integer
-bitVectorToInteger = undefined
+bitVectorToInteger bv = bvtoiH (canonicalise bv) 1 0
 -- HINT: It would be easier to first canonicalise the bitvectors!
 
 -- EXERCISE: BitVector addition
